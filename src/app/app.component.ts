@@ -108,6 +108,10 @@ export class AppComponent {
       return VideoType.TIKTOK;
     } else if (t.indexOf('instagram.com') !== -1) {
       return VideoType.INSTAGRAM;
+    } else if (t.indexOf('kwai-video.com') !== -1) {
+      return VideoType.KWAI;
+    } else if (t.indexOf('samsungcloud.com') !== -1) {
+      return VideoType.SAMSUNG_CLOUD;
     }
     return VideoType.OTHER
   }

@@ -5,5 +5,7 @@ export enum VideoType {
   TIKTOK = 'TikTok',
   GOOGLE_PHOTOS = 'Google Photos',
   INSTAGRAM = 'Instagram',
-  ICLOUD = 'iCloud'
+  ICLOUD = 'iCloud',
+  KWAI = 'Kwai',
+  SAMSUNG_CLOUD = 'Samsung Cloud',
 }

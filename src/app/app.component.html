@@ -2,16 +2,20 @@
 
 <p>
   Queue client for <a href="https://www.speedrun.com/subsurf">subsurf</a>, using the <a
-  href="https://github.com/speedruncomorg/api">SRC API</a>.<br>
-  Please note:
+  href="https://github.com/speedruncomorg/api">SRC API</a> (see <a
+  href="https://github.com/akleemans/subsurf-queueclient">Github</a>).Please note:
 </p>
 <ul>
   <li>Runs can be sorted and/or filtered, see below.</li>
-  <li>Only 5000 runs total will be loaded.</li>
-  <li>Runs will be cached on SRC and might</li>
+  <li>20'000 is the maximum of runs that can be loaded.</li>
+  <li>Runs will be cached on the SRC API and might be already verified or rejected.
+    It can take up to 30 minutes to get new data from the API.
+  </li>
 </ul>
 
 <button mat-raised-button (click)="loadRuns()">Load runs</button>
+
+<p *ngIf="runsLoaded"><b>{{dataSource.data.length}} runs loaded</b></p>
 
 <mat-spinner *ngIf="runsLoading"></mat-spinner>
 <mat-form-field appearance="standard">

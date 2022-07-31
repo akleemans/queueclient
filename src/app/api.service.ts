@@ -9,7 +9,7 @@ import {Run, RunResponse} from './model/run';
 export class ApiService {
   private gameId = 'y65797de';
   private baseUrl = `https://www.speedrun.com/api/v1`;
-  private maxRuns = 5000;
+  private maxPaginationOffset = 10000;
 
   public constructor(
     private readonly httpClient: HttpClient
@@ -18,15 +18,30 @@ export class ApiService {
 
   public getQueue(): Observable<Run[]> {
     const urls: Observable<Run[]>[] = [];
-    for (let i = 0; i < this.maxRuns; i += 200) {
-      const url = `${this.baseUrl}/runs?game=${this.gameId}&status=new&embed=category,level,players&orderby=submitted&direction=desc&max=200&offset=${i}`
-      urls.push(this.httpClient.get<RunResponse>(url).pipe(map(r => r.data)))
+    for (let i = 0; i < this.maxPaginationOffset; i += 200) {
+      for (let direction of ['asc', 'desc']) {
+        const ascUrl = `${this.baseUrl}/runs?game=${this.gameId}&status=new&embed=category,level,players&orderby=submitted&direction=${direction}&max=200&offset=${i}`
+        urls.push(this.httpClient.get<RunResponse>(ascUrl).pipe(map(r => r.data)))
+      }
     }
     return forkJoin(urls).pipe(map(result => {
       const arr: Run[] = [];
       result.forEach(r => arr.push(...r))
-      return arr;
+      // Only return uniques
+      return this.getDistinctArray(arr);
     }));
+  }
+
+  private getDistinctArray(arr: Run[]) {
+    const dups = {};
+    return arr.filter((el) => {
+      let hash = el.id;
+      // @ts-ignore
+      let isDup = dups[hash];
+      // @ts-ignore
+      dups[hash] = true;
+      return !isDup;
+    });
   }
 
   /*
