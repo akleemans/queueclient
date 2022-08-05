@@ -23,9 +23,18 @@ button {
   width: 100%;
 }
 
-
-/*
-td, th {
-  width: 25%;
+mat-icon {
+  height: 16px;
+  width: 16px;
+  font-size: 16px;
 }
-*/
+
+.moderator-fields {
+  display: flex;
+  flex-direction: row;
+
+  .mat-form-field:first-child {
+    margin-right: 10px;
+    width: 250px;
+  }
+}

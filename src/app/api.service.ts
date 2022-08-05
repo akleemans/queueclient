@@ -1,6 +1,8 @@
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {forkJoin, map, Observable} from 'rxjs';
+import {UiRun} from './app.component';
+import {EnvService} from './env.service';
 import {Run, RunResponse} from './model/run';
 
 @Injectable({
@@ -8,7 +10,7 @@ import {Run, RunResponse} from './model/run';
 })
 export class ApiService {
   private gameId = 'y65797de';
-  private baseUrl = `https://www.speedrun.com/api/v1`;
+  private baseUrl = EnvService.getRestUrl();
   private maxPaginationOffset = 10000;
 
   public constructor(
@@ -27,18 +29,47 @@ export class ApiService {
     return forkJoin(urls).pipe(map(result => {
       const arr: Run[] = [];
       result.forEach(r => arr.push(...r))
-      // Only return uniques
-      return this.getDistinctArray(arr);
+      // Only return unique runs, sort them by date ascending
+      return this.getDistinctArray(arr)
+      .sort((a, b) => a.submitted < b.submitted ? -1 : 1);
+    }));
+  }
+
+  public rejectRuns(runs: UiRun[], message: string, apiKey: string): Observable<string> {
+    const requests: Observable<string>[] = [];
+
+    const rejectionStatus = {status: {status: 'rejected', reason: message}};
+    const headers = new HttpHeaders().set('X-API-Key', apiKey);
+    for (let run of runs) {
+      const url = `${this.baseUrl}/runs/${run.id}/status`;
+      requests.push(this.httpClient.put<any>(url, rejectionStatus, {headers: headers}));
+    }
+
+    return forkJoin(requests).pipe(map(result => {
+      return result.join(', ');
+    }));
+  }
+
+  public acceptRuns(runs: UiRun[], apiKey: string): Observable<string> {
+    const requests: Observable<string>[] = [];
+
+    const acceptStatus = {status: {status: 'verified'}};
+    const headers = new HttpHeaders().set('X-API-Key', apiKey).set('Content-Type', 'text/plain');
+    for (let run of runs) {
+      const url = `${this.baseUrl}/runs/${run.id}/status`
+      requests.push(this.httpClient.put<any>(url, acceptStatus, {headers: headers}));
+    }
+
+    return forkJoin(requests).pipe(map(result => {
+      return result.join(', ');
     }));
   }
 
   private getDistinctArray(arr: Run[]) {
-    const dups = {};
+    const dups: { [key: string]: boolean } = {};
     return arr.filter((el) => {
       let hash = el.id;
-      // @ts-ignore
-      let isDup = dups[hash];
-      // @ts-ignore
+      let isDup: boolean | undefined = dups[hash];
       dups[hash] = true;
       return !isDup;
     });
