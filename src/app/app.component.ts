@@ -56,31 +56,23 @@ export class AppComponent {
   ) {
   }
 
-  public loadRuns() {
+  public loadRuns(): void {
     this.loadingState = LoadingState.LOADING;
     this.apiService.getQueue().subscribe(runs => {
-      /*
-        private getDistinctArray(arr: Run[]) {
-    const dups: {[key: string]: boolean} = {};
-    return arr.filter((el) => {
-      let hash = el.id;
-      let isDup: boolean | undefined = dups[hash];
-      el.dup = isDup ? 'duplicate' : '';
-      dups[hash] = true;
-      return !isDup;
-    });
-  }
-       */
-      const alreadySeen: {[key: string]: boolean} = {};
+      const alreadySeen: { [key: string]: boolean } = {};
       const uiRuns: UiRun[] = runs.map(r => {
-        const videoLink = this.getVideoLink(r);
-        const dup = alreadySeen[videoLink];
-        alreadySeen[videoLink] = true;
-        return {
+          const videoLink = this.getVideoLink(r);
+          const user = this.getPlayerName(r);
+
+          // Check both user and video for duplicate detection
+          const key = user + videoLink;
+          const dup = alreadySeen[key];
+          alreadySeen[key] = true;
+          return {
             id: r.id,
             dup: dup ? 'duplicate' : '',
             category: r.category.data.name,
-            user: this.getPlayerName(r),
+            user,
             time: r.times.primary_t,
             submitted: r.submitted,
             videoLink,
@@ -104,7 +96,7 @@ export class AppComponent {
   }
 
 
-  public applyFilter(event: Event) {
+  public applyFilter(event: Event): void {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
 
@@ -183,10 +175,17 @@ export class AppComponent {
     this.selection.clear();
   }
 
+  public getSortedFilteredRunsCurrentPage(): UiRun[] {
+    const filteredData = this.dataSource.filteredData;
+    const orderedData = this.dataSource._orderData(filteredData);
+    const pageData = this.dataSource._pageData(orderedData);
+    return pageData;
+  }
+
   /** Whether the number of selected elements matches the total number of rows. */
   public isAllSelected() {
     const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource._pageData(this.dataSource.filteredData).length;
+    const numRows = this.getSortedFilteredRunsCurrentPage().length;
     return numSelected === numRows;
   }
 
@@ -197,7 +196,7 @@ export class AppComponent {
       return;
     }
 
-    const visibleRows = this.dataSource._pageData(this.dataSource.filteredData)
+    const visibleRows = this.getSortedFilteredRunsCurrentPage();
     this.selection.select(...visibleRows);
   }
 }

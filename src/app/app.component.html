@@ -25,7 +25,7 @@
   loaded</b></p>
 <mat-spinner *ngIf="loadingState === loadingStateEnum.LOADING"></mat-spinner>
 <br>
-<mat-checkbox [(ngModel)]="showModerationActions">Show moderation actions</mat-checkbox>
+<mat-slide-toggle [(ngModel)]="showModerationActions">Show moderation actions</mat-slide-toggle>
 
 <div *ngIf="showModerationActions">
   <h2>Moderation actions</h2>
@@ -51,8 +51,8 @@
     <b>{{selection.selected.length}} runs will be affected!</b>
   </div>
   <div class="moderation-buttons">
-    <button mat-raised-button color="primary" (click)="acceptRuns()"
-            [disabled]="selection.selected.length === 0">
+    <button mat-raised-button color="primary" (click)="acceptRuns()" [disabled]="true">
+      <!-- Generally disabled for now -->
       Accept
     </button>
     <button mat-raised-button color="warn" (click)="rejectRuns()"
