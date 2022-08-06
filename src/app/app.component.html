@@ -25,7 +25,8 @@
   loaded</b></p>
 <mat-spinner *ngIf="loadingState === loadingStateEnum.LOADING"></mat-spinner>
 <br>
-<mat-slide-toggle [(ngModel)]="showModerationActions">Show moderation actions</mat-slide-toggle>
+<mat-slide-toggle [(ngModel)]="showModerationActions" disabled="disabled">Show moderation actions
+</mat-slide-toggle>
 
 <div *ngIf="showModerationActions">
   <h2>Moderation actions</h2>
