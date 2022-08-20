@@ -171,7 +171,7 @@ export class AppComponent {
     this.moderationStatus = 'Loading...';
     this.apiService.rejectRuns(runs, this.message, this.apiKey)
     .subscribe(result => this.moderationStatus = 'Successfully rejected runs!',
-      error => this.moderationStatus = `Error - ${error}`);
+      error => this.moderationStatus = `Error - ${JSON.stringify(error)}`);
     this.selection.clear();
   }
 
