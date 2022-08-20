@@ -1,5 +1,5 @@
 {
-  "name": "subsurf-queueclient",
+  "name": "queueclient",
   "version": "0.0.0",
   "scripts": {
     "start": "ng serve",

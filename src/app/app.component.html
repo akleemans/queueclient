@@ -1,9 +1,8 @@
-<h1>subsurf-queueclient</h1>
+<h1>queueclient</h1>
 
 <p>
-  Queue client for <a href="https://www.speedrun.com/subsurf">subsurf</a>, using the <a
-  href="https://github.com/speedruncomorg/api">SRC API</a> (see <a
-  href="https://github.com/akleemans/subsurf-queueclient">Github</a>).Please note:
+  Queue client using the <a href="https://github.com/speedruncomorg/api">SRC API</a>
+  (see <a href="https://github.com/akleemans/queueclient">Github</a>).Please note:
 </p>
 <ul>
   <li>Runs can be sorted and/or filtered, see below.</li>
@@ -16,6 +15,16 @@
   </li>
 </ul>
 
+<div class="game-input">
+  <p>
+    Enter game ID:
+  </p>
+  <mat-form-field appearance="standard">
+    <mat-label>Game-ID</mat-label>
+    <input matInput [(ngModel)]="gameId">
+  </mat-form-field>
+</div>
+
 <button mat-raised-button (click)="loadRuns()"
         [disabled]="loadingState === loadingStateEnum.LOADED_COOLDOWN">
   Load runs
@@ -25,10 +34,9 @@
   loaded</b></p>
 <mat-spinner *ngIf="loadingState === loadingStateEnum.LOADING"></mat-spinner>
 <br>
-<!-- Doesn't work on github.io, don't show it there
-<mat-slide-toggle [(ngModel)]="showModerationActions">Show moderation actions
+<mat-slide-toggle [(ngModel)]="showModerationActions" *ngIf="isLocal">
+  Show moderation actions
 </mat-slide-toggle>
--->
 
 <div *ngIf="showModerationActions">
   <h2>Moderation actions</h2>

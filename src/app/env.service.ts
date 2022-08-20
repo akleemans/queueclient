@@ -19,7 +19,7 @@ export class EnvService {
     return this.restUrl;
   }
 
-  private static isDevelopment = (): boolean => location.host.includes('localhost');
+  public static isDevelopment = (): boolean => location.host.includes('localhost');
 }
 
 EnvService.initialize();

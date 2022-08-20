@@ -15,6 +15,7 @@ import {MatTableModule} from '@angular/material/table';
 import {MatTabsModule} from '@angular/material/tabs';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {RouterModule} from '@angular/router';
 import {AppComponent} from './app.component';
 
 @NgModule({
@@ -38,6 +39,10 @@ import {AppComponent} from './app.component';
     MatCheckboxModule,
     MatIconModule,
     MatSlideToggleModule,
+    RouterModule.forRoot([{
+      path: '',
+      component: AppComponent
+    }]),
   ],
   providers: [],
   bootstrap: [AppComponent]

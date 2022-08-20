@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "subsurf-queueclient": {
+    "queueclient": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -18,7 +18,7 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "docs",
-            "baseHref": "/subsurf-queueclient/",
+            "baseHref": "/queueclient/",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -74,10 +74,10 @@
           },
           "configurations": {
             "production": {
-              "browserTarget": "subsurf-queueclient:build:production"
+              "browserTarget": "queueclient:build:production"
             },
             "development": {
-              "browserTarget": "subsurf-queueclient:build:development"
+              "browserTarget": "queueclient:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -85,7 +85,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "subsurf-queueclient:build"
+            "browserTarget": "queueclient:build"
           }
         },
         "test": {

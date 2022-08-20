@@ -1,6 +1,6 @@
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Injectable} from '@angular/core';
-import {forkJoin, map, Observable} from 'rxjs';
+import {forkJoin, map, Observable, switchMap, timer} from 'rxjs';
 import {UiRun} from './app.component';
 import {EnvService} from './env.service';
 import {Run, RunResponse} from './model/run';
@@ -9,21 +9,26 @@ import {Run, RunResponse} from './model/run';
   providedIn: 'root'
 })
 export class ApiService {
-  private gameId = 'y65797de';
   private baseUrl = EnvService.getRestUrl();
   private maxPaginationOffset = 10000;
+  private pageSize = 200;
+  private apiDelay = 250; // 650 would be ideal for constant pinging
 
   public constructor(
     private readonly httpClient: HttpClient
   ) {
   }
 
-  public getQueue(): Observable<Run[]> {
+  public getQueue(gameId: string): Observable<Run[]> {
     const urls: Observable<Run[]>[] = [];
-    for (let i = 0; i < this.maxPaginationOffset; i += 200) {
+    for (let i = 0; i < this.maxPaginationOffset / this.pageSize; i += 1) {
+      const offset = i * this.pageSize;
       for (let direction of ['asc', 'desc']) {
-        const ascUrl = `${this.baseUrl}/runs?game=${this.gameId}&status=new&embed=category,level,players&orderby=submitted&direction=${direction}&max=200&offset=${i}`
-        urls.push(this.httpClient.get<RunResponse>(ascUrl).pipe(map(r => r.data)))
+        const ascUrl = `${this.baseUrl}/runs?game=${gameId}&status=new&embed=category,level,players&orderby=submitted&direction=${direction}&max=200&offset=${offset}`
+        urls.push(
+          timer(this.apiDelay * i).pipe(
+            switchMap(() => this.httpClient.get<RunResponse>(ascUrl).pipe(map(r => r.data))))
+        )
       }
     }
     return forkJoin(urls).pipe(map(result => {
@@ -34,6 +39,30 @@ export class ApiService {
       .sort((a, b) => a.submitted < b.submitted ? -1 : 1);
     }));
   }
+
+  /*
+  urls.push(timer(this.apiDelay * i).pipe(
+          switchMap(() => this.httpClient.get<UserResponse>(userIdUrl).pipe(
+            map(response => {
+              console.log('Mapping response:', response);
+              return response.data.id
+            }),
+            catchError(error => {
+              console.log('Error fetching user:', error);
+              return of('');
+            })
+          )),
+          switchMap(userId => {
+            console.log('got userId:', userId);
+            if (userId !== '') {
+              return this.httpClient.get<RunResponse>(`${this.baseUrl}/runs?user=${userId}&status=new&embed=category,level,players&orderby=submitted&direction=desc`)
+            } else {
+              return of({data: []});
+            }
+          }),
+          map(runs => runs.data),
+        )
+   */
 
   public rejectRuns(runs: UiRun[], message: string, apiKey: string): Observable<string> {
     const requests: Observable<string>[] = [];

@@ -1,9 +1,11 @@
 import {SelectionModel} from '@angular/cdk/collections';
-import {Component, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
+import {ActivatedRoute} from '@angular/router';
 import {ApiService} from './api.service';
+import {EnvService} from './env.service';
 import {Run} from './model/run';
 import {VideoType} from './model/video-type';
 
@@ -31,7 +33,7 @@ enum LoadingState {
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   public loadingStateEnum = LoadingState;
   public loadingState = LoadingState.INITIAL;
   public runColumns = ['select', 'category', 'user', 'time', 'submitted', 'videoType', 'videoLink', 'dup', 'weblink'];
@@ -45,6 +47,9 @@ export class AppComponent {
   public maxBatchVerify = 50;
   public moderationStatus = '';
 
+  public isLocal = false;
+  public gameId = '';
+
   @ViewChild(MatPaginator)
   public paginator: MatPaginator | undefined;
 
@@ -52,13 +57,27 @@ export class AppComponent {
   public sort: MatSort | undefined;
 
   public constructor(
-    private readonly apiService: ApiService
+    private readonly apiService: ApiService,
+    private readonly route: ActivatedRoute,
   ) {
+  }
+
+  public ngOnInit(): void {
+    this.isLocal = EnvService.isDevelopment();
+
+    // TODO get game-id from parameter
+    // this.route.snapshot.queryParamMap
+    this.route.queryParams.subscribe(params => {
+      this.gameId = params['gameId'];
+      console.log('GameId from params:', this.gameId);
+    });
+
+    // this.route.snapshot.paramMap.get('id');
   }
 
   public loadRuns(): void {
     this.loadingState = LoadingState.LOADING;
-    this.apiService.getQueue().subscribe(runs => {
+    this.apiService.getQueue(this.gameId).subscribe(runs => {
       const alreadySeen: { [key: string]: boolean } = {};
       const uiRuns: UiRun[] = runs.map(r => {
           const videoLink = this.getVideoLink(r);
