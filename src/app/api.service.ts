@@ -12,7 +12,7 @@ export class ApiService {
   private baseUrl = EnvService.getRestUrl();
   private maxPaginationOffset = 10000;
   private pageSize = 200;
-  private apiDelay = 250; // 650 would be ideal for constant pinging
+  private apiDelay = 100; // 650 would be ideal for constant pinging
 
   public constructor(
     private readonly httpClient: HttpClient
@@ -39,30 +39,6 @@ export class ApiService {
       .sort((a, b) => a.submitted < b.submitted ? -1 : 1);
     }));
   }
-
-  /*
-  urls.push(timer(this.apiDelay * i).pipe(
-          switchMap(() => this.httpClient.get<UserResponse>(userIdUrl).pipe(
-            map(response => {
-              console.log('Mapping response:', response);
-              return response.data.id
-            }),
-            catchError(error => {
-              console.log('Error fetching user:', error);
-              return of('');
-            })
-          )),
-          switchMap(userId => {
-            console.log('got userId:', userId);
-            if (userId !== '') {
-              return this.httpClient.get<RunResponse>(`${this.baseUrl}/runs?user=${userId}&status=new&embed=category,level,players&orderby=submitted&direction=desc`)
-            } else {
-              return of({data: []});
-            }
-          }),
-          map(runs => runs.data),
-        )
-   */
 
   public rejectRuns(runs: UiRun[], message: string, apiKey: string): Observable<string> {
     const requests: Observable<string>[] = [];
@@ -103,10 +79,4 @@ export class ApiService {
       return !isDup;
     });
   }
-
-  /*
-  public getVariables(): Observable<Category[]> {
-    // https://www.speedrun.com/api/v1/games/y65797de/variables
-    return this.httpClient.get<VariableResonse>(`${this.baseUrl}/games/${this.gameId}/variables`).pipe(map(v => v.data));
-  }*/
 }

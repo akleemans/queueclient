@@ -49,6 +49,9 @@ export class AppComponent implements OnInit {
 
   public isLocal = false;
   public gameId = '';
+  public gameShortName = '';
+
+  public showList = false;
 
   @ViewChild(MatPaginator)
   public paginator: MatPaginator | undefined;
@@ -64,15 +67,10 @@ export class AppComponent implements OnInit {
 
   public ngOnInit(): void {
     this.isLocal = EnvService.isDevelopment();
-
-    // TODO get game-id from parameter
-    // this.route.snapshot.queryParamMap
     this.route.queryParams.subscribe(params => {
       this.gameId = params['gameId'];
       console.log('GameId from params:', this.gameId);
     });
-
-    // this.route.snapshot.paramMap.get('id');
   }
 
   public loadRuns(): void {
@@ -90,6 +88,7 @@ export class AppComponent implements OnInit {
           return {
             id: r.id,
             dup: dup ? 'duplicate' : '',
+            game: r.game,
             category: r.category.data.name,
             user,
             time: r.times.primary_t,
@@ -101,6 +100,7 @@ export class AppComponent implements OnInit {
         }
       );
       console.log('All runs:', uiRuns);
+      this.gameShortName = runs[0].weblink.split('/')[3];
       this.dataSource = new MatTableDataSource(uiRuns);
       if (this.paginator && this.sort) {
         console.log('Setting paginator & sort!');
@@ -146,20 +146,21 @@ export class AppComponent implements OnInit {
     const t = this.getVideoLink(run).toLowerCase();
     if (t.indexOf('http://') === -1 && t.indexOf('https://') === -1) {
       return VideoType.NO_LINK;
+    } else if (t.indexOf('recorder.page.link/') !== -1) {
+      return VideoType.INVALID_LINK;
     } else if (t.indexOf('photos.app.goo.gl') !== -1) {
       return VideoType.GOOGLE_PHOTOS;
     } else if (t.indexOf('youtu.be') !== -1 || t.indexOf('youtube.com') !== -1) {
       return VideoType.YOUTUBE;
-    } else if (t.indexOf('icloud.com') !== -1) {
-      return VideoType.ICLOUD;
+    } else if (t.indexOf('icloud.com/') !== -1 || t.indexOf('samsungcloud.com/') !== -1 ||
+      t.indexOf('s.amsu.ng/') !== -1) {
+      return VideoType.TEMPORARY_LINK;
     } else if (t.indexOf('tiktok.com') !== -1) {
       return VideoType.TIKTOK;
     } else if (t.indexOf('instagram.com') !== -1) {
       return VideoType.INSTAGRAM;
     } else if (t.indexOf('kwai-video.com') !== -1) {
       return VideoType.KWAI;
-    } else if (t.indexOf('samsungcloud.com') !== -1) {
-      return VideoType.SAMSUNG_CLOUD;
     }
     return VideoType.OTHER
   }

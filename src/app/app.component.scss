@@ -9,6 +9,11 @@ table {
   }
 }
 
+table.simple-table, .simple-table th, .simple-table td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
 h2 {
   margin-top: 15px;
 }
