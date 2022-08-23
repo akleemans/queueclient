@@ -4,8 +4,11 @@ import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {ActivatedRoute} from '@angular/router';
+import * as FileSaver from 'file-saver';
+import * as XLSX from 'xlsx';
 import {ApiService} from './api.service';
 import {EnvService} from './env.service';
+import {MinuteSecondsPipe} from './minute-seconds.pipe';
 import {Run} from './model/run';
 import {VideoType} from './model/video-type';
 
@@ -51,8 +54,6 @@ export class AppComponent implements OnInit {
   public gameId = '';
   public gameShortName = '';
 
-  public showList = false;
-
   @ViewChild(MatPaginator)
   public paginator: MatPaginator | undefined;
 
@@ -62,6 +63,7 @@ export class AppComponent implements OnInit {
   public constructor(
     private readonly apiService: ApiService,
     private readonly route: ActivatedRoute,
+    private readonly minuteSecondsPipe: MinuteSecondsPipe
   ) {
   }
 
@@ -77,7 +79,7 @@ export class AppComponent implements OnInit {
     this.loadingState = LoadingState.LOADING;
     this.apiService.getQueue(this.gameId).subscribe(runs => {
       const alreadySeen: { [key: string]: boolean } = {};
-      const uiRuns: UiRun[] = runs.map(r => {
+      let uiRuns: UiRun[] = runs.map(r => {
           const videoLink = this.getVideoLink(r);
           const user = this.getPlayerName(r);
 
@@ -99,8 +101,19 @@ export class AppComponent implements OnInit {
           };
         }
       );
-      console.log('All runs:', uiRuns);
       this.gameShortName = runs[0].weblink.split('/')[3];
+
+      // Sort by submitted, but show runs of a user first
+      const earliestUserSubmit: { [key: string]: string } = {};
+      uiRuns.forEach((run) => {
+        if (!earliestUserSubmit[run.user]) {
+          earliestUserSubmit[run.user] = run.submitted;
+        }
+      });
+
+      uiRuns = uiRuns.sort((a, b) =>
+        earliestUserSubmit[a.user] + a.submitted < earliestUserSubmit[b.user] + b.submitted ? -1 : 1)
+
       this.dataSource = new MatTableDataSource(uiRuns);
       if (this.paginator && this.sort) {
         console.log('Setting paginator & sort!');
@@ -218,5 +231,79 @@ export class AppComponent implements OnInit {
 
     const visibleRows = this.getSortedFilteredRunsCurrentPage();
     this.selection.select(...visibleRows);
+  }
+
+  /* -------- EXPORT --------- */
+
+  private readonly CSV_DELIMITER = ';'
+  private readonly EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+
+  public runColWidths = [
+    {wch: 10}, {wch: 15}, {wch: 10}, {wch: 20}, {wch: 10}, {wch: 60}, {wch: 10}, {wch: 60}
+  ];
+
+  public prepareRunsData(): string[][] {
+    const attributes: string[] = [...this.runColumns].splice(1);
+    const data: string[][] = [];
+    data.push(attributes)
+    for (let run of this.dataSource.data ?? []) {
+      const values = attributes.map(attribute => {
+        if (attribute === 'dup') {
+          return run.dup === 'duplicate' ? 'D' : '';
+        } else if (attribute === 'time') {
+          return this.minuteSecondsPipe.transform(run.time);
+        }
+        const value = this.resolve(run, attribute);
+        return value !== undefined ? value.toString() : '';
+      }).map(v => this.replaceSpecialChars(v));
+      data.push(values);
+    }
+    return data;
+  }
+
+  private replaceSpecialChars(value: string): string {
+    value = (value == null ? '' : value.toString());
+    return value.split(this.CSV_DELIMITER).join(',').split('\n').join(' | ');
+  }
+
+  public downloadRunsCSV(): void {
+    const data = this.prepareRunsData();
+    this.downloadCSV(data.map(row => row.join(this.CSV_DELIMITER) + '\n'))
+  }
+
+  public downloadRunsXSLX(): void {
+    const data = this.prepareRunsData();
+    this.downloadXLSX(data, this.runColWidths);
+  }
+
+  public downloadCSV(data: string[]): void {
+    const blob = new Blob(data, {type: 'text/csv'});
+    const fileName = this.gameShortName + '-runs.csv';
+    FileSaver.saveAs(blob, fileName);
+  }
+
+  public downloadXLSX(json: string[][], colWidths: any[]): void {
+    const fileName = this.gameShortName + '-runs.xlsx';
+
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(json, {skipHeader: true});
+    const workbook: XLSX.WorkBook = {Sheets: {'data': worksheet}, SheetNames: ['data']};
+
+    // Set column width
+    worksheet["!cols"] = colWidths;
+    // Set autofilter
+    worksheet['!autofilter'] = {ref: "A1:H1"};
+
+    const excelBuffer: any = XLSX.write(workbook, {bookType: 'xlsx', type: 'array'});
+    const data: Blob = new Blob([excelBuffer], {type: this.EXCEL_TYPE});
+    FileSaver.saveAs(data, fileName);
+  }
+
+  private resolve(obj: any, ns: string): any {
+    let undef;
+    let nsa = ns.split('.');
+    while (obj && nsa[0]) {
+      obj = obj[nsa.shift()!] || undef;
+    }
+    return obj;
   }
 }

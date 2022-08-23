@@ -12,6 +12,9 @@
     Only the duplicates will have the attribute, not the original (oldest) submissions.
   </li>
   <li>You can filter for "invalid link" or "temporary link" to quickly spot those.</li>
+  <li>Default sorting is by submitted date, but if a user has more runs, those will be listed
+    below his oldest submission too.
+  </li>
 </ul>
 
 <div class="game-input">
@@ -80,18 +83,25 @@
 
 <br>
 
-<mat-slide-toggle [(ngModel)]="showList"
-                  [disabled]="loadingState <= loadingStateEnum.LOADING || showList">
-  Show one big list (takes some time to render)
-</mat-slide-toggle>
+<div class="download-buttons">
+  <button mat-raised-button (click)="downloadRunsCSV()"
+          [disabled]="loadingState <= loadingStateEnum.LOADING">
+    Download CSV
+  </button>
 
-<mat-form-field appearance="standard" *ngIf="!showList">
+  <button mat-raised-button (click)="downloadRunsXSLX()"
+          [disabled]="loadingState <= loadingStateEnum.LOADING">
+    Download XLSX
+  </button>
+</div>
+
+<mat-form-field appearance="standard">
   <mat-label>Filter for any attribute...</mat-label>
   <input matInput (keyup)="applyFilter($event)"
          [disabled]="loadingState <= loadingStateEnum.LOADING">
 </mat-form-field>
 
-<div class="mat-elevation-z8" *ngIf="!showList">
+<div class="mat-elevation-z8">
   <table mat-table [dataSource]="dataSource" matSort>
 
     <!-- Checkbox Column -->
@@ -174,29 +184,4 @@
   </table>
 
   <mat-paginator [pageSize]="50" [pageSizeOptions]="[50, 100, 200]"></mat-paginator>
-</div>
-
-<div *ngIf="showList">
-  <table class="simple-table">
-    <tr>
-      <th>Category</th>
-      <th>User</th>
-      <th>Time</th>
-      <th>Submitted</th>
-      <th>Video type</th>
-      <th>Video link</th>
-      <th>Duplicate</th>
-      <th>Run link</th>
-    </tr>
-    <tr *ngFor="let run of dataSource.data">
-      <td>{{run.category}}</td>
-      <td>{{run.user}}</td>
-      <td>{{run.time | minuteSeconds}}</td>
-      <td>{{run.submitted}}</td>
-      <td>{{run.videoType}}</td>
-      <td><a [href]="run.videoLink" target="_blank">{{run.videoLink}}</a></td>
-      <td>{{run.dup === 'duplicate' ? 'D' : ''}}</td>
-      <td><a [href]="run.weblink" target="_blank">Link</a></td>
-    </tr>
-  </table>
 </div>

@@ -10,7 +10,7 @@ import {Run, RunResponse} from './model/run';
 })
 export class ApiService {
   private baseUrl = EnvService.getRestUrl();
-  private maxPaginationOffset = 10000;
+  private maxPaginationOffset = 800; // 10000
   private pageSize = 200;
   private apiDelay = 100; // 650 would be ideal for constant pinging
 
@@ -35,8 +35,7 @@ export class ApiService {
       const arr: Run[] = [];
       result.forEach(r => arr.push(...r))
       // Only return unique runs, sort them by date ascending
-      return this.getDistinctArray(arr)
-      .sort((a, b) => a.submitted < b.submitted ? -1 : 1);
+      return this.getDistinctSortedArray(arr);
     }));
   }
 
@@ -70,13 +69,15 @@ export class ApiService {
     }));
   }
 
-  private getDistinctArray(arr: Run[]) {
+  private getDistinctSortedArray(arr: Run[]) {
     const dups: { [key: string]: boolean } = {};
-    return arr.filter((el) => {
+    arr = arr.filter((el) => {
       let hash = el.id;
       let isDup: boolean | undefined = dups[hash];
       dups[hash] = true;
       return !isDup;
     });
+    arr = arr.sort((a, b) => a.submitted < b.submitted ? -1 : 1)
+    return arr;
   }
 }

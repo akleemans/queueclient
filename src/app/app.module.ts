@@ -46,7 +46,8 @@ import {MinuteSecondsPipe} from './minute-seconds.pipe';
       component: AppComponent
     }]),
   ],
-  providers: [],
+  exports: [],
+  providers: [MinuteSecondsPipe],
   bootstrap: [AppComponent]
 })
 export class AppModule {
