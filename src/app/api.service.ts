@@ -10,7 +10,7 @@ import {Run, RunResponse} from './model/run';
 })
 export class ApiService {
   private baseUrl = EnvService.getRestUrl();
-  private maxPaginationOffset = 800; // 10000
+  private maxPaginationOffset = 10000;
   private pageSize = 200;
   private apiDelay = 100; // 650 would be ideal for constant pinging
 
