@@ -10,12 +10,14 @@ import {ApiService} from './api.service';
 import {EnvService} from './env.service';
 import {MinuteSecondsPipe} from './minute-seconds.pipe';
 import {Run} from './model/run';
+import {VariableMap} from './model/variable';
 import {VideoType} from './model/video-type';
 
 export interface UiRun {
   id: string;
   dup: string;
   category: string;
+  subcategory: string;
   user: string;
   time: number;
   submitted: string;
@@ -39,7 +41,7 @@ enum LoadingState {
 export class AppComponent implements OnInit {
   public loadingStateEnum = LoadingState;
   public loadingState = LoadingState.INITIAL;
-  public runColumns = ['select', 'category', 'user', 'time', 'submitted', 'videoType', 'videoLink', 'dup', 'weblink'];
+  public runColumns = ['select', 'category', 'subcategory', 'user', 'time', 'submitted', 'videoType', 'videoLink', 'dup', 'weblink'];
   // @ts-ignore
   public dataSource: MatTableDataSource<UiRun>;
   public selection = new SelectionModel<UiRun>(true, []);
@@ -53,6 +55,7 @@ export class AppComponent implements OnInit {
   public isLocal = false;
   public gameId = '';
   public gameShortName = '';
+  private variableMap: VariableMap = {};
 
   @ViewChild(MatPaginator)
   public paginator: MatPaginator | undefined;
@@ -75,8 +78,32 @@ export class AppComponent implements OnInit {
     });
   }
 
+  private getVariables(values: { [key: string]: string }) {
+    let text = '';
+    for (let value in values) {
+      if (text !== '') {
+        text += ', ';
+      }
+      text += this.variableMap[values[value]] || '';
+    }
+    return text;
+  }
+
   public loadRuns(): void {
     this.loadingState = LoadingState.LOADING;
+
+    // Fetch game variables
+    this.apiService.getVariables(this.gameId).subscribe(categories => {
+      categories.forEach(category => {
+        // Reading category values
+        for (let value in category.values.values) {
+          this.variableMap[value] = category.values.values[value].label;
+        }
+      });
+      console.log('Saved variables:', this.variableMap);
+    });
+
+    // Fetch runs
     this.apiService.getQueue(this.gameId).subscribe(runs => {
       const alreadySeen: { [key: string]: boolean } = {};
       let uiRuns: UiRun[] = runs.map(r => {
@@ -92,6 +119,7 @@ export class AppComponent implements OnInit {
             dup: dup ? 'duplicate' : '',
             game: r.game,
             category: r.category.data.name,
+            subcategory: this.getVariables(r.values),
             user,
             time: r.times.primary_t,
             submitted: r.submitted,
@@ -159,7 +187,7 @@ export class AppComponent implements OnInit {
     const t = this.getVideoLink(run).toLowerCase();
     if (t.indexOf('http://') === -1 && t.indexOf('https://') === -1) {
       return VideoType.NO_LINK;
-    } else if (t.indexOf('recorder.page.link/') !== -1) {
+    } else if (t.indexOf('recorder.page.link') !== -1) {
       return VideoType.INVALID_LINK;
     } else if (t.indexOf('photos.app.goo.gl') !== -1) {
       return VideoType.GOOGLE_PHOTOS;
@@ -239,7 +267,7 @@ export class AppComponent implements OnInit {
   private readonly EXCEL_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
 
   public runColWidths = [
-    {wch: 10}, {wch: 15}, {wch: 10}, {wch: 20}, {wch: 10}, {wch: 60}, {wch: 10}, {wch: 60}
+    {wch: 10}, {wch: 15}, {wch: 20}, {wch: 10}, {wch: 20}, {wch: 10}, {wch: 60}, {wch: 10}, {wch: 60}
   ];
 
   public prepareRunsData(): string[][] {

@@ -1,0 +1,442 @@
+{
+  "data": [
+    {
+      "id": "p85mq5lg",
+      "name": "Coins",
+      "category": "zd3l938d",
+      "scope": {
+        "type": "full-game"
+      },
+      "mandatory": true,
+      "user-defined": false,
+      "obsoletes": true,
+      "values": {
+        "_note": "`choices` is deprecated, please use `values` instead",
+        "choices": {
+          "klrjyeoq": "100 Coins",
+          "8100wv51": "500 Coins",
+          "gq79rvyl": "1000 Coins",
+          "rqv278w1": "5000 Coins",
+          "zqomrx21": "10000 Coins"
+        },
+        "values": {
+          "klrjyeoq": {
+            "label": "100 Coins",
+            "rules": null,
+            "flags": {
+              "miscellaneous": false
+            }
+          },
+          "8100wv51": {
+            "label": "500 Coins",
+            "rules": null,
+            "flags": {
+              "miscellaneous": false
+            }
+          },
+          "gq79rvyl": {
+            "label": "1000 Coins",
+            "rules": null,
+            "flags": {
+              "miscellaneous": false
+            }
+          },
+          "rqv278w1": {
+            "label": "5000 Coins",
+            "rules": null,
+            "flags": {
+              "miscellaneous": null
+            }
+          },
+          "zqomrx21": {
+            "label": "10000 Coins",
+            "rules": null,
+            "flags": {
+              "miscellaneous": false
+            }
+          }
+        },
+        "default": "klrjyeoq"
+      },
+      "is-subcategory": true,
+      "links": [
+        {
+          "rel": "self",
+          "uri": "https://www.speedrun.com/api/v1/variables/p85mq5lg"
+        },
+        {
+          "rel": "game",
+          "uri": "https://www.speedrun.com/api/v1/games/y65797de"
+        },
+        {
+          "rel": "category",
+          "uri": "https://www.speedrun.com/api/v1/categories/zd3l938d"
+        }
+      ]
+    },
+    {
+      "id": "j84666jl",
+      "name": "Score",
+      "category": "ndx78y52",
+      "scope": {
+        "type": "full-game"
+      },
+      "mandatory": true,
+      "user-defined": false,
+      "obsoletes": true,
+      "values": {
+        "_note": "`choices` is deprecated, please use `values` instead",
+        "choices": {
+          "xqk4eg9l": "100K",
+          "gq745vnq": "500K",
+          "21g4nwx1": "1M",
+          "jqz5nr4q": "5M",
+          "klr03e0l": "10M"
+        },
+        "values": {
+          "xqk4eg9l": {
+            "label": "100K",
+            "rules": null,
+            "flags": {
+              "miscellaneous": null
+            }
+          },
+          "gq745vnq": {
+            "label": "500K",
+            "rules": null,
+            "flags": {
+              "miscellaneous": null
+            }
+          },
+          "21g4nwx1": {
+            "label": "1M",
+            "rules": null,
+            "flags": {
+              "miscellaneous": null
+            }
+          },
+          "jqz5nr4q": {
+            "label": "5M",
+            "rules": null,
+            "flags": {
+              "miscellaneous": null
+            }
+          },
+          "klr03e0l": {
+            "label": "10M",
+            "rules": null,
+            "flags": {
+              "miscellaneous": null
+            }
+          }
+        },
+        "default": "xqk4eg9l"
+      },
+      "is-subcategory": true,
+      "links": [
+        {
+          "rel": "self",
+          "uri": "https://www.speedrun.com/api/v1/variables/j84666jl"
+        },
+        {
+          "rel": "game",
+          "uri": "https://www.speedrun.com/api/v1/games/y65797de"
+        },
+        {
+          "rel": "category",
+          "uri": "https://www.speedrun.com/api/v1/categories/ndx78y52"
+        }
+      ]
+    },
+    {
+      "id": "onvvme7n",
+      "name": "Score",
+      "category": "jdzr5yv2",
+      "scope": {
+        "type": "global"
+      },
+      "mandatory": true,
+      "user-defined": false,
+      "obsoletes": true,
+      "values": {
+        "_note": "`choices` is deprecated, please use `values` instead",
+        "choices": {
+          "z190mgy1": "100K",
+          "p12gdedq": "500K",
+          "81prpwvq": "1M",
+          "xqkpjkdl": "5M",
+          "gq7yjepq": "10M"
+        },
+        "values": {
+          "z190mgy1": {
+            "label": "100K",
+            "rules": null,
+            "flags": {
+              "miscellaneous": null
+            }
+          },
+          "p12gdedq": {
+            "label": "500K",
+            "rules": null,
+            "flags": {
+              "miscellaneous": null
+            }
+          },
+          "81prpwvq": {
+            "label": "1M",
+            "rules": null,
+            "flags": {
+              "miscellaneous": null
+            }
+          },
+          "xqkpjkdl": {
+            "label": "5M",
+            "rules": null,
+            "flags": {
+              "miscellaneous": null
+            }
+          },
+          "gq7yjepq": {
+            "label": "10M",
+            "rules": null,
+            "flags": {
+              "miscellaneous": null
+            }
+          }
+        },
+        "default": "z190mgy1"
+      },
+      "is-subcategory": true,
+      "links": [
+        {
+          "rel": "self",
+          "uri": "https://www.speedrun.com/api/v1/variables/onvvme7n"
+        },
+        {
+          "rel": "game",
+          "uri": "https://www.speedrun.com/api/v1/games/y65797de"
+        },
+        {
+          "rel": "category",
+          "uri": "https://www.speedrun.com/api/v1/categories/jdzr5yv2"
+        }
+      ]
+    },
+    {
+      "id": "rn1444kn",
+      "name": "Boosts",
+      "category": "ndx78y52",
+      "scope": {
+        "type": "full-game"
+      },
+      "mandatory": true,
+      "user-defined": false,
+      "obsoletes": true,
+      "values": {
+        "_note": "`choices` is deprecated, please use `values` instead",
+        "choices": {
+          "21dykj31": "Boosts",
+          "5q80kxr1": "No Boosts"
+        },
+        "values": {
+          "21dykj31": {
+            "label": "Boosts",
+            "rules": "**Boosts** - You can use Score Boosters and Head-Starts.",
+            "flags": {
+              "miscellaneous": false
+            }
+          },
+          "5q80kxr1": {
+            "label": "No Boosts",
+            "rules": "**No Boosts** - You can not use Score Boosters and Head-Starts. You are only allowed to use Score Boosters if by using them you don\u0027t surpass the starting multiplier limit (x38 or x50).",
+            "flags": {
+              "miscellaneous": false
+            }
+          }
+        },
+        "default": "21dykj31"
+      },
+      "is-subcategory": true,
+      "links": [
+        {
+          "rel": "self",
+          "uri": "https://www.speedrun.com/api/v1/variables/rn1444kn"
+        },
+        {
+          "rel": "game",
+          "uri": "https://www.speedrun.com/api/v1/games/y65797de"
+        },
+        {
+          "rel": "category",
+          "uri": "https://www.speedrun.com/api/v1/categories/ndx78y52"
+        }
+      ]
+    },
+    {
+      "id": "ylp64o6n",
+      "name": "Boosts",
+      "category": "jdzr5yv2",
+      "scope": {
+        "type": "global"
+      },
+      "mandatory": true,
+      "user-defined": false,
+      "obsoletes": true,
+      "values": {
+        "_note": "`choices` is deprecated, please use `values` instead",
+        "choices": {
+          "21gk8r6l": "Boosts",
+          "jqzop721": "No Boosts"
+        },
+        "values": {
+          "21gk8r6l": {
+            "label": "Boosts",
+            "rules": "**Boosts** - You can use Score Boosters and Head-Starts.",
+            "flags": {
+              "miscellaneous": false
+            }
+          },
+          "jqzop721": {
+            "label": "No Boosts",
+            "rules": "**No Boosts** - You can not use Score Boosters and Head-Starts. You are only allowed to use Score Boosters if by using them you don\u0027t surpass the starting multiplier limit (x38 or x50).",
+            "flags": {
+              "miscellaneous": false
+            }
+          }
+        },
+        "default": "21gk8r6l"
+      },
+      "is-subcategory": true,
+      "links": [
+        {
+          "rel": "self",
+          "uri": "https://www.speedrun.com/api/v1/variables/ylp64o6n"
+        },
+        {
+          "rel": "game",
+          "uri": "https://www.speedrun.com/api/v1/games/y65797de"
+        },
+        {
+          "rel": "category",
+          "uri": "https://www.speedrun.com/api/v1/categories/jdzr5yv2"
+        }
+      ]
+    },
+    {
+      "id": "dlo39yjl",
+      "name": "Mystery boxes",
+      "category": "zd38qj8k",
+      "scope": {
+        "type": "full-game"
+      },
+      "mandatory": true,
+      "user-defined": false,
+      "obsoletes": true,
+      "values": {
+        "_note": "`choices` is deprecated, please use `values` instead",
+        "choices": {
+          "810mykpl": "1",
+          "9qj4okoq": "3",
+          "jq6xw6oq": "5"
+        },
+        "values": {
+          "810mykpl": {
+            "label": "1",
+            "rules": null,
+            "flags": {
+              "miscellaneous": null
+            }
+          },
+          "9qj4okoq": {
+            "label": "3",
+            "rules": null,
+            "flags": {
+              "miscellaneous": null
+            }
+          },
+          "jq6xw6oq": {
+            "label": "5",
+            "rules": null,
+            "flags": {
+              "miscellaneous": null
+            }
+          }
+        },
+        "default": "810mykpl"
+      },
+      "is-subcategory": true,
+      "links": [
+        {
+          "rel": "self",
+          "uri": "https://www.speedrun.com/api/v1/variables/dlo39yjl"
+        },
+        {
+          "rel": "game",
+          "uri": "https://www.speedrun.com/api/v1/games/y65797de"
+        },
+        {
+          "rel": "category",
+          "uri": "https://www.speedrun.com/api/v1/categories/zd38qj8k"
+        }
+      ]
+    },
+    {
+      "id": "j84eeg2n",
+      "name": "No Coin",
+      "category": "n2y350ed",
+      "scope": {
+        "type": "full-game"
+      },
+      "mandatory": true,
+      "user-defined": false,
+      "obsoletes": true,
+      "values": {
+        "_note": "`choices` is deprecated, please use `values` instead",
+        "choices": {
+          "21gy6p81": "No Hoverboard/Keys",
+          "gq7koxd1": "No Keys",
+          "81p8z58l": "Keys"
+        },
+        "values": {
+          "21gy6p81": {
+            "label": "No Hoverboard/Keys",
+            "rules": null,
+            "flags": {
+              "miscellaneous": false
+            }
+          },
+          "gq7koxd1": {
+            "label": "No Keys",
+            "rules": null,
+            "flags": {
+              "miscellaneous": false
+            }
+          },
+          "81p8z58l": {
+            "label": "Keys",
+            "rules": "Using **revive** more than three times is not allowed. // N\u00e3o \u00e9 permitido usar o **revive** mais de tr\u00eas vezes.",
+            "flags": {
+              "miscellaneous": false
+            }
+          }
+        },
+        "default": "21gy6p81"
+      },
+      "is-subcategory": true,
+      "links": [
+        {
+          "rel": "self",
+          "uri": "https://www.speedrun.com/api/v1/variables/j84eeg2n"
+        },
+        {
+          "rel": "game",
+          "uri": "https://www.speedrun.com/api/v1/games/y65797de"
+        },
+        {
+          "rel": "category",
+          "uri": "https://www.speedrun.com/api/v1/categories/n2y350ed"
+        }
+      ]
+    }
+  ]
+}

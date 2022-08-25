@@ -4,6 +4,7 @@ import {forkJoin, map, Observable, switchMap, timer} from 'rxjs';
 import {UiRun} from './app.component';
 import {EnvService} from './env.service';
 import {Run, RunResponse} from './model/run';
+import {Category, VariableResonse} from './model/variable';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +18,11 @@ export class ApiService {
   public constructor(
     private readonly httpClient: HttpClient
   ) {
+  }
+
+  public getVariables(gameId: string): Observable<Category[]> {
+    const url = `https://www.speedrun.com/api/v1/games/${gameId}/variables`
+    return this.httpClient.get<VariableResonse>(url).pipe(map(r => r.data))
   }
 
   public getQueue(gameId: string): Observable<Run[]> {

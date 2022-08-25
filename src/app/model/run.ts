@@ -100,6 +100,6 @@ export interface Run {
     "region": string | null;
   },
   "splits": any;
-  "values": any;
+  "values": { [key: string]: string };
   "links": []
 }

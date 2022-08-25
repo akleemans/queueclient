@@ -7,13 +7,13 @@
   Also, runs will be cached on the SRC API, it can take up to 30 minutes to get new data.
 </p>
 <ul>
-  <li>You can toggle below to see one big list, but can't toggle back (needs reload).</li>
+  <li>You can export all the raw run data as CSV or XSLX.</li>
   <li>You can sort for duplicates, but also filter for them (filter for the term "duplicate").
     Only the duplicates will have the attribute, not the original (oldest) submissions.
   </li>
   <li>You can filter for "invalid link" or "temporary link" to quickly spot those.</li>
-  <li>Default sorting is by submitted date, but if a user has more runs, those will be listed
-    below his oldest submission too.
+  <li>Default sorting is by submitted date (oldest first), but if a user has more runs, those will
+    be listed just below his oldest submission too.
   </li>
 </ul>
 
@@ -124,6 +124,13 @@
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Category</th>
       <td mat-cell *matCellDef="let row">
         {{row.category}}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="subcategory">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Subcategory</th>
+      <td mat-cell *matCellDef="let row">
+        {{row.subcategory}}
       </td>
     </ng-container>
 
