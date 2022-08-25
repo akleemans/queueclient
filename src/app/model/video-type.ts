@@ -6,6 +6,7 @@ export enum VideoType {
   YOUTUBE = 'Youtube',
   TIKTOK = 'TikTok',
   GOOGLE_PHOTOS = 'Google Photos',
+  GOOGLE_DRIVE = 'Google Drive',
   INSTAGRAM = 'Instagram',
   KWAI = 'Kwai',
 }

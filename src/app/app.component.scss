@@ -24,9 +24,18 @@ button {
   margin-right: 15px;
 }
 
-.mat-form-field {
-  font-size: 14px;
+.filter-row {
   width: 100%;
+
+  .mat-form-field {
+    font-size: 14px;
+    margin-right: 15px;
+
+    .additional-selection {
+      opacity: 0.75;
+      font-size: 0.75em;
+    }
+  }
 }
 
 mat-icon {

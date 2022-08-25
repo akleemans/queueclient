@@ -21,7 +21,7 @@ export interface UiRun {
   user: string;
   time: number;
   submitted: string;
-  videoType: string;
+  videoType: VideoType;
   videoLink: string;
   weblink: string;
 }
@@ -56,6 +56,16 @@ export class AppComponent implements OnInit {
   public gameId = '';
   public gameShortName = '';
   private variableMap: VariableMap = {};
+
+  public filterValue = '';
+  public categories: string[] = []
+  public categoryFilter: string[] = [];
+  public videoTypes: string[] = [
+    VideoType.YOUTUBE, VideoType.GOOGLE_PHOTOS, VideoType.GOOGLE_DRIVE, VideoType.TIKTOK,
+    VideoType.INSTAGRAM, VideoType.KWAI, VideoType.NO_LINK, VideoType.INVALID_LINK,
+    VideoType.TEMPORARY_LINK, VideoType.OTHER,
+  ];
+  public videoTypeFilter: VideoType[] = [];
 
   @ViewChild(MatPaginator)
   public paginator: MatPaginator | undefined;
@@ -134,6 +144,12 @@ export class AppComponent implements OnInit {
       // Sort by submitted, but show runs of a user first
       const earliestUserSubmit: { [key: string]: string } = {};
       uiRuns.forEach((run) => {
+        // Collect categories
+        if (this.categories.indexOf(run.category) === -1) {
+          this.categories.push(run.category);
+        }
+
+        // Collect earliest user submit dates
         if (!earliestUserSubmit[run.user]) {
           earliestUserSubmit[run.user] = run.submitted;
         }
@@ -142,7 +158,20 @@ export class AppComponent implements OnInit {
       uiRuns = uiRuns.sort((a, b) =>
         earliestUserSubmit[a.user] + a.submitted < earliestUserSubmit[b.user] + b.submitted ? -1 : 1)
 
+      console.log('Showing', uiRuns.length, 'runs:', uiRuns);
+
       this.dataSource = new MatTableDataSource(uiRuns);
+      this.dataSource.filterPredicate = (run: UiRun, filter: string): boolean => this.filterPredicate(run, filter);
+
+      // Adapted from https://github.com/angular/components/blob/main/src/material/table/table-data-source.ts
+      this.dataSource._filterData = (data: UiRun[]) => {
+        this.dataSource.filteredData = data.filter(obj => this.dataSource.filterPredicate(obj, this.dataSource.filter));
+        if (this.dataSource.paginator) {
+          this.dataSource._updatePaginator(this.dataSource.filteredData.length);
+        }
+        return this.dataSource.filteredData;
+      };
+
       if (this.paginator && this.sort) {
         console.log('Setting paginator & sort!');
         this.dataSource.paginator = this.paginator;
@@ -155,10 +184,9 @@ export class AppComponent implements OnInit {
     });
   }
 
-
-  public applyFilter(event: Event): void {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+  public applyFilter(): void {
+    this.dataSource.filter = this.filterValue;
+    // this.dataSource._updateChangeSubscription();
 
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
@@ -191,6 +219,8 @@ export class AppComponent implements OnInit {
       return VideoType.INVALID_LINK;
     } else if (t.indexOf('photos.app.goo.gl') !== -1) {
       return VideoType.GOOGLE_PHOTOS;
+    } else if (t.indexOf('drive.google.com') !== -1) {
+      return VideoType.GOOGLE_DRIVE;
     } else if (t.indexOf('youtu.be') !== -1 || t.indexOf('youtube.com') !== -1) {
       return VideoType.YOUTUBE;
     } else if (t.indexOf('icloud.com/') !== -1 || t.indexOf('samsungcloud.com/') !== -1 ||
@@ -260,6 +290,20 @@ export class AppComponent implements OnInit {
     const visibleRows = this.getSortedFilteredRunsCurrentPage();
     this.selection.select(...visibleRows);
   }
+
+  private filterPredicate(run: UiRun, filter: string): boolean {
+    if (this.categoryFilter.length > 0 && this.categoryFilter.indexOf(run.category) === -1 ||
+      this.videoTypeFilter.length > 0 && this.videoTypeFilter.indexOf(run.videoType) === -1) {
+      return false;
+    }
+    // Copied from original implementation
+    const dataStr = Object.keys(run).reduce((currentTerm: string, key: string) => {
+      return currentTerm + (run as { [key: string]: any })[key] + '◬';
+    }, '').toLowerCase();
+    // Transform the filter by converting it to lowercase and removing whitespace
+    const transformedFilter = filter.trim().toLowerCase();
+    return dataStr.indexOf(transformedFilter) !== -1;
+  };
 
   /* -------- EXPORT --------- */
 
