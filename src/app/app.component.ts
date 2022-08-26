@@ -215,7 +215,7 @@ export class AppComponent implements OnInit {
     const t = this.getVideoLink(run).toLowerCase();
     if (t.indexOf('http://') === -1 && t.indexOf('https://') === -1) {
       return VideoType.NO_LINK;
-    } else if (t.indexOf('recorder.page.link') !== -1) {
+    } else if (t.indexOf('recorder.page.link') !== -1 || t.indexOf('speedrun.com') !== -1) {
       return VideoType.INVALID_LINK;
     } else if (t.indexOf('photos.app.goo.gl') !== -1) {
       return VideoType.GOOGLE_PHOTOS;
@@ -230,6 +230,10 @@ export class AppComponent implements OnInit {
       return VideoType.TIKTOK;
     } else if (t.indexOf('instagram.com') !== -1) {
       return VideoType.INSTAGRAM;
+    } else if (t.indexOf('facebook.com/') !== -1) {
+      return VideoType.FACEBOOK;
+    } else if (t.indexOf('twitch.tv/') !== -1) {
+      return VideoType.TWITCH;
     } else if (t.indexOf('kwai-video.com') !== -1) {
       return VideoType.KWAI;
     }

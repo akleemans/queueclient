@@ -8,5 +8,7 @@ export enum VideoType {
   GOOGLE_PHOTOS = 'Google Photos',
   GOOGLE_DRIVE = 'Google Drive',
   INSTAGRAM = 'Instagram',
+  FACEBOOK = 'Facebook',
+  TWITCH = 'Twitch',
   KWAI = 'Kwai',
 }
