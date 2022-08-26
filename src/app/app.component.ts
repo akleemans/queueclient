@@ -62,8 +62,8 @@ export class AppComponent implements OnInit {
   public categoryFilter: string[] = [];
   public videoTypes: string[] = [
     VideoType.YOUTUBE, VideoType.GOOGLE_PHOTOS, VideoType.GOOGLE_DRIVE, VideoType.TIKTOK,
-    VideoType.INSTAGRAM, VideoType.KWAI, VideoType.NO_LINK, VideoType.INVALID_LINK,
-    VideoType.TEMPORARY_LINK, VideoType.OTHER,
+    VideoType.INSTAGRAM, VideoType.KWAI, VideoType.FACEBOOK, VideoType.TWITCH, VideoType.NO_LINK,
+    VideoType.INVALID_LINK, VideoType.TEMPORARY_LINK, VideoType.OTHER,
   ];
   public videoTypeFilter: VideoType[] = [];
 
