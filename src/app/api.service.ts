@@ -20,6 +20,11 @@ export class ApiService {
   ) {
   }
 
+  public getGameId(gameDisplayId: string): Observable<string> {
+    const url = `https://www.speedrun.com/api/v1/games/${gameDisplayId}`;
+    return this.httpClient.get<{ data: { id: string } }>(url).pipe(map(r => r.data.id))
+  }
+
   public getVariables(gameId: string): Observable<Category[]> {
     const url = `https://www.speedrun.com/api/v1/games/${gameId}/variables`
     return this.httpClient.get<VariableResonse>(url).pipe(map(r => r.data))

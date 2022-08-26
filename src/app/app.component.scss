@@ -58,8 +58,9 @@ mat-icon {
   display: flex;
   flex-direction: row;
   align-items: baseline;
+  height: 60px;
 
-  > p {
+  > * {
     margin-right: 10px;
   }
 

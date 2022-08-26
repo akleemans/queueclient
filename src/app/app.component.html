@@ -19,14 +19,17 @@
 
 <div class="game-input">
   <p>
-    Enter game ID:
+    Enter GameId:
   </p>
   <div>
     <mat-form-field appearance="standard">
-      <mat-label>Game-ID</mat-label>
-      <input matInput [(ngModel)]="gameId">
+      <mat-label>GameId</mat-label>
+      <input matInput [(ngModel)]="gameDisplayId">
     </mat-form-field>
   </div>
+</div>
+<div style="margin-bottom: 10px;">
+  <small>You can find this in the URL: www.speedrun.com/&lt;GameId&gt;</small>
 </div>
 
 <button mat-raised-button (click)="loadRuns()"
@@ -35,7 +38,7 @@
 </button>
 
 <p *ngIf="loadingState >= loadingStateEnum.LOADED_COOLDOWN"><b>
-  {{dataSource.data.length}} runs loaded</b> from {{gameShortName}}
+  {{dataSource.data.length}} runs loaded</b> from {{gameDisplayId}}
 </p>
 <mat-spinner *ngIf="loadingState === loadingStateEnum.LOADING"></mat-spinner>
 <br>

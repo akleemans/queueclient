@@ -5,6 +5,7 @@ import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 import {ActivatedRoute} from '@angular/router';
 import * as FileSaver from 'file-saver';
+import {switchMap} from 'rxjs';
 import * as XLSX from 'xlsx';
 import {ApiService} from './api.service';
 import {EnvService} from './env.service';
@@ -53,8 +54,8 @@ export class AppComponent implements OnInit {
   public moderationStatus = '';
 
   public isLocal = false;
+  public gameDisplayId = '';
   public gameId = '';
-  public gameShortName = '';
   private variableMap: VariableMap = {};
 
   public filterValue = '';
@@ -83,8 +84,8 @@ export class AppComponent implements OnInit {
   public ngOnInit(): void {
     this.isLocal = EnvService.isDevelopment();
     this.route.queryParams.subscribe(params => {
-      this.gameId = params['gameId'];
-      console.log('GameId from params:', this.gameId);
+      this.gameDisplayId = params['gameId'];
+      console.log('GameId from params:', this.gameDisplayId);
     });
   }
 
@@ -103,7 +104,7 @@ export class AppComponent implements OnInit {
     this.loadingState = LoadingState.LOADING;
 
     // Fetch game variables
-    this.apiService.getVariables(this.gameId).subscribe(categories => {
+    this.apiService.getVariables(this.gameDisplayId).subscribe(categories => {
       categories.forEach(category => {
         // Reading category values
         for (let value in category.values.values) {
@@ -114,7 +115,13 @@ export class AppComponent implements OnInit {
     });
 
     // Fetch runs
-    this.apiService.getQueue(this.gameId).subscribe(runs => {
+    this.apiService.getGameId(this.gameDisplayId).pipe(
+      switchMap(gameId => {
+        this.gameId = gameId;
+        console.log('Resolved', this.gameDisplayId, 'to', this.gameId);
+        return this.apiService.getQueue(this.gameId);
+      })
+    ).subscribe(runs => {
       const alreadySeen: { [key: string]: boolean } = {};
       let uiRuns: UiRun[] = runs.map(r => {
           const videoLink = this.getVideoLink(r);
@@ -139,7 +146,6 @@ export class AppComponent implements OnInit {
           };
         }
       );
-      this.gameShortName = runs[0].weblink.split('/')[3];
 
       // Sort by submitted, but show runs of a user first
       const earliestUserSubmit: { [key: string]: string } = {};
@@ -197,8 +203,10 @@ export class AppComponent implements OnInit {
     const links = run.videos?.links;
     if (links?.length > 0) {
       return links[0].uri;
-    } else if (run.videos.text) {
+    } else if (run.videos?.text) {
       return run.videos.text;
+    } else {
+      return '?';
     }
     return '?';
   }
@@ -206,7 +214,11 @@ export class AppComponent implements OnInit {
   public getPlayerName(run: Run): string {
     const playerData = run.players.data;
     if (playerData.length > 0) {
-      return playerData[0].names.international;
+      if (playerData[0].names) {
+        return playerData[0].names.international;
+      }
+      // If runner is a guest without account, return name
+      return playerData[0].name || '';
     }
     return '?';
   }
@@ -354,12 +366,12 @@ export class AppComponent implements OnInit {
 
   public downloadCSV(data: string[]): void {
     const blob = new Blob(data, {type: 'text/csv'});
-    const fileName = this.gameShortName + '-runs.csv';
+    const fileName = this.gameDisplayId + '-runs.csv';
     FileSaver.saveAs(blob, fileName);
   }
 
   public downloadXLSX(json: string[][], colWidths: any[]): void {
-    const fileName = this.gameShortName + '-runs.xlsx';
+    const fileName = this.gameDisplayId + '-runs.xlsx';
 
     const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(json, {skipHeader: true});
     const workbook: XLSX.WorkBook = {Sheets: {'data': worksheet}, SheetNames: ['data']};

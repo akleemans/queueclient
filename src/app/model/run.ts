@@ -51,6 +51,7 @@ export interface Run {
           "international": "Caruso",
           "japanese": null
         },
+        name?: string,
         "supporterAnimation": false,
         "pronouns": null,
         "weblink": "https://www.speedrun.com/user/Caruso",
