@@ -190,6 +190,10 @@ export class AppComponent implements OnInit {
     });
   }
 
+  public getProgress(): number {
+    return this.apiService.getProgress();
+  }
+
   public applyFilter(): void {
     this.dataSource.filter = this.filterValue;
     // this.dataSource._updateChangeSubscription();

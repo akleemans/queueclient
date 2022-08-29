@@ -13,7 +13,8 @@ export class ApiService {
   private baseUrl = EnvService.getRestUrl();
   private maxPaginationOffset = 10000;
   private pageSize = 200;
-  private apiDelay = 100; // 650 would be ideal for constant pinging
+  private apiDelay = 610;
+  private progress = 0;
 
   public constructor(
     private readonly httpClient: HttpClient
@@ -30,7 +31,12 @@ export class ApiService {
     return this.httpClient.get<VariableResonse>(url).pipe(map(r => r.data))
   }
 
+  public getProgress(): number {
+    return this.progress;
+  }
+
   public getQueue(gameId: string): Observable<Run[]> {
+    this.progress = 0;
     const urls: Observable<Run[]>[] = [];
     for (let i = 0; i < this.maxPaginationOffset / this.pageSize; i += 1) {
       const offset = i * this.pageSize;
@@ -38,7 +44,10 @@ export class ApiService {
         const ascUrl = `${this.baseUrl}/runs?game=${gameId}&status=new&embed=category,level,players&orderby=submitted&direction=${direction}&max=200&offset=${offset}`
         urls.push(
           timer(this.apiDelay * i).pipe(
-            switchMap(() => this.httpClient.get<RunResponse>(ascUrl).pipe(map(r => r.data))))
+            switchMap(() => this.httpClient.get<RunResponse>(ascUrl).pipe(map(r => {
+              this.progress += 1;
+              return r.data;
+            }))))
         )
       }
     }

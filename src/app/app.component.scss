@@ -68,3 +68,13 @@ mat-icon {
     width: 200px;
   }
 }
+
+.query-hint {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 10px;
+
+  > span {
+    margin-right: 10px;
+  }
+}

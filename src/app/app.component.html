@@ -33,14 +33,24 @@
 </div>
 
 <button mat-raised-button (click)="loadRuns()"
-        [disabled]="loadingState === loadingStateEnum.LOADED_COOLDOWN">
+        [disabled]="loadingState === loadingStateEnum.LOADED_COOLDOWN || loadingState === loadingStateEnum.LOADING">
   Load runs
 </button>
 
-<p *ngIf="loadingState >= loadingStateEnum.LOADED_COOLDOWN"><b>
-  {{dataSource.data.length}} runs loaded</b> from {{gameDisplayId}}
+<p *ngIf="loadingState >= loadingStateEnum.LOADED_COOLDOWN">
+  <b>{{dataSource.data.length}} runs loaded</b>
 </p>
-<mat-spinner *ngIf="loadingState === loadingStateEnum.LOADING"></mat-spinner>
+
+<div class="query-hint" *ngIf="loadingState === loadingStateEnum.LOADING">
+  <span>
+    Querying API...
+  </span>
+  <mat-spinner diameter="20" mode="indeterminate"></mat-spinner>
+</div>
+
+<mat-progress-bar *ngIf="loadingState === loadingStateEnum.LOADING" mode="determinate"
+                  [value]="getProgress()"></mat-progress-bar>
+
 <br>
 <mat-slide-toggle [(ngModel)]="showModerationActions" *ngIf="isLocal">
   Show moderation actions
