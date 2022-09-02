@@ -7,6 +7,13 @@ table {
     overflow: hidden;
     white-space: nowrap;
   }
+
+  .username {
+    font-weight: bold;
+    background-size: 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
 }
 
 .download-buttons {

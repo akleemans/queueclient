@@ -56,15 +56,27 @@ export interface Run {
         "pronouns": null,
         "weblink": "https://www.speedrun.com/user/Caruso",
         "name-style": {
-          "style": "solid",
+          "style": "solid" | "gradient",
           "color": {
-            "light": "#EE2222",
-            "dark": "#EE4444"
+            "light": string,
+            "dark": string
+          },
+          "color-from": {
+            "light": string,
+            "dark": string
+          },
+          "color-to": {
+            "light": string,
+            "dark": string
           }
         },
         "role": "user",
         "signup": "2022-07-25T14:26:14Z",
-        "location": null,
+        "location": {
+          country: {
+            code: string | null;
+          }
+        },
         "twitch": null,
         "hitbox": null,
         "youtube": null,

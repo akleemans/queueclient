@@ -27,6 +27,12 @@ export interface UiRun {
   weblink: string;
 }
 
+interface ColorData {
+  style: string;
+  colorFrom: string;
+  colorTo: string;
+}
+
 enum LoadingState {
   INITIAL,
   LOADING,
@@ -52,6 +58,7 @@ export class AppComponent implements OnInit {
   public apiKey = '';
   public maxBatchVerify = 50;
   public moderationStatus = '';
+  public cooldownMs = 15_000;
 
   public isLocal = false;
   public gameDisplayId = '';
@@ -126,6 +133,7 @@ export class AppComponent implements OnInit {
       let uiRuns: UiRun[] = runs.map(r => {
           const videoLink = this.getVideoLink(r);
           const user = this.getPlayerName(r);
+          const nameColor = this.getNameColor(r);
 
           // Check both user and video for duplicate detection
           const key = user + videoLink;
@@ -138,6 +146,7 @@ export class AppComponent implements OnInit {
             category: r.category.data.name,
             subcategory: this.getVariables(r.values),
             user,
+            nameColor,
             time: r.times.primary_t,
             submitted: r.submitted,
             videoLink,
@@ -149,6 +158,7 @@ export class AppComponent implements OnInit {
 
       // Sort by submitted, but show runs of a user first
       const earliestUserSubmit: { [key: string]: string } = {};
+      this.categories = [];
       uiRuns.forEach((run) => {
         // Collect categories
         if (this.categories.indexOf(run.category) === -1) {
@@ -186,7 +196,7 @@ export class AppComponent implements OnInit {
         console.log('paginator or source undefined :(');
       }
       this.loadingState = LoadingState.LOADED_COOLDOWN;
-      setTimeout(() => this.loadingState = LoadingState.LOADED_FINISHED, 60_000);
+      setTimeout(() => this.loadingState = LoadingState.LOADED_FINISHED, this.cooldownMs);
     });
   }
 
@@ -225,6 +235,28 @@ export class AppComponent implements OnInit {
       return playerData[0].name || '';
     }
     return '?';
+  }
+
+  public getNameColor(run: Run): ColorData {
+    const colorData = {
+      country: '',
+      style: 'linear',
+      colorFrom: '#000000',
+      colorTo: '#000000'
+    };
+    const playerData = run.players.data;
+    if (playerData.length > 0 && playerData[0]['name-style']) {
+      const nameStyle = playerData[0]['name-style'];
+      if (nameStyle.style === 'gradient') {
+        colorData.colorFrom = nameStyle['color-from'].light;
+        colorData.colorTo = nameStyle['color-to'].light;
+      } else {
+        colorData.colorFrom = nameStyle.color.light;
+        colorData.colorTo = nameStyle.color.light;
+      }
+      colorData.country = playerData[0].location?.country?.code ?? '';
+    }
+    return colorData;
   }
 
   public getVideoType(run: Run): VideoType {

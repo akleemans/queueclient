@@ -185,7 +185,13 @@
     <ng-container matColumnDef="user">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> User</th>
       <td mat-cell *matCellDef="let row">
-        {{row.user}}
+        <span class="username" [style.background-color]="row.nameColor.colorFrom"
+              [style.background-image]="'linear-gradient(45deg,'+ row.nameColor.colorFrom + ',' + row.nameColor.colorTo + ')'">
+          <img *ngIf="row.nameColor.country !== ''"
+               [src]="'https://www.speedrun.com/images/flags/'+row.nameColor.country+'.png'"
+               height="12">
+          {{row.user}}
+        </span>
       </td>
     </ng-container>
 
