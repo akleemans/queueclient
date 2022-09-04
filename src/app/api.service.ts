@@ -13,7 +13,7 @@ export class ApiService {
   private baseUrl = EnvService.getRestUrl();
   private maxPaginationOffset = 10000;
   private pageSize = 200;
-  private apiDelay = 610;
+  private apiDelay = 1000; // 610 would match 100 requests / min, but currently that doesn't seem to work
   private progress = 0;
 
   public constructor(
