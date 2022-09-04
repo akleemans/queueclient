@@ -13,7 +13,7 @@ export class ApiService {
   private baseUrl = EnvService.getRestUrl();
   private maxPaginationOffset = 10000;
   private pageSize = 200;
-  private apiDelay = 1000; // 610 would match 100 requests / min, but currently that doesn't seem to work
+  private apiDelay = 610; // 610 would match 100 requests / min, but currently that doesn't seem to work
   private progress = 0;
 
   public constructor(
@@ -37,13 +37,15 @@ export class ApiService {
 
   public getQueue(gameId: string): Observable<Run[]> {
     this.progress = 0;
+    let requestCount = 0;
     const urls: Observable<Run[]>[] = [];
     for (let i = 0; i < this.maxPaginationOffset / this.pageSize; i += 1) {
       const offset = i * this.pageSize;
       for (let direction of ['asc', 'desc']) {
+        requestCount += 1;
         const ascUrl = `${this.baseUrl}/runs?game=${gameId}&status=new&embed=category,level,players&orderby=submitted&direction=${direction}&max=200&offset=${offset}`
         urls.push(
-          timer(this.apiDelay * i).pipe(
+          timer(this.apiDelay * requestCount).pipe(
             switchMap(() => this.httpClient.get<RunResponse>(ascUrl).pipe(map(r => {
               this.progress += 1;
               return r.data;
