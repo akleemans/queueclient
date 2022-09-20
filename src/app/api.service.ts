@@ -11,9 +11,8 @@ import {Category, VariableResonse} from './model/variable';
 })
 export class ApiService {
   private baseUrl = EnvService.getRestUrl();
-  private maxPaginationOffset = 10000;
   private pageSize = 200;
-  private apiDelay = 610; // 610 would match 100 requests / min, but currently that doesn't seem to work
+  private apiDelay = 610;
   private progress = 0;
 
   public constructor(
@@ -35,11 +34,11 @@ export class ApiService {
     return this.progress;
   }
 
-  public getQueue(gameId: string): Observable<Run[]> {
+  public getQueue(gameId: string, maxPaginationOffset: number): Observable<Run[]> {
     this.progress = 0;
     let requestCount = 0;
     const urls: Observable<Run[]>[] = [];
-    for (let i = 0; i < this.maxPaginationOffset / this.pageSize; i += 1) {
+    for (let i = 0; i < maxPaginationOffset / this.pageSize; i += 1) {
       const offset = i * this.pageSize;
       for (let direction of ['asc', 'desc']) {
         requestCount += 1;
@@ -47,7 +46,7 @@ export class ApiService {
         urls.push(
           timer(this.apiDelay * requestCount).pipe(
             switchMap(() => this.httpClient.get<RunResponse>(ascUrl).pipe(map(r => {
-              this.progress += 1;
+              this.progress += (maxPaginationOffset == 400) ? 25 : 1;
               return r.data;
             }))))
         )

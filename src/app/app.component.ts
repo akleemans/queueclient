@@ -60,6 +60,7 @@ export class AppComponent implements OnInit {
   public moderationStatus = '';
   public cooldownMs = 15_000;
 
+  public maxPaginationOffset = 400;
   public isLocal = false;
   public gameDisplayId = '';
   public gameId = '';
@@ -126,7 +127,7 @@ export class AppComponent implements OnInit {
       switchMap(gameId => {
         this.gameId = gameId;
         console.log('Resolved', this.gameDisplayId, 'to', this.gameId);
-        return this.apiService.getQueue(this.gameId);
+        return this.apiService.getQueue(this.gameId, this.maxPaginationOffset);
       })
     ).subscribe(runs => {
       const alreadySeen: { [key: string]: boolean } = {};

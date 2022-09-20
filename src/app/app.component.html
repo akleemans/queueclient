@@ -32,6 +32,18 @@
   <small>You can find this in the URL: www.speedrun.com/&lt;GameId&gt;</small>
 </div>
 
+<mat-form-field appearance="outline" style="margin-right: 10px;">
+  <mat-label>Fetch mode</mat-label>
+  <mat-select [(ngModel)]="maxPaginationOffset">
+    <mat-option [value]="400">
+      Fast
+    </mat-option>
+    <mat-option [value]="10000">
+      Full queue (slow, max. 20k runs)
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
 <button mat-raised-button (click)="loadRuns()"
         [disabled]="loadingState === loadingStateEnum.LOADED_COOLDOWN || loadingState === loadingStateEnum.LOADING">
   Load runs
