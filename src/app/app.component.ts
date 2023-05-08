@@ -13,6 +13,7 @@ import {MinuteSecondsPipe} from './minute-seconds.pipe';
 import {Run} from './model/run';
 import {VariableMap} from './model/variable';
 import {VideoType} from './model/video-type';
+import {HttpClient} from "@angular/common/http";
 
 export interface UiRun {
   id: string;
@@ -85,7 +86,8 @@ export class AppComponent implements OnInit {
   public constructor(
     private readonly apiService: ApiService,
     private readonly route: ActivatedRoute,
-    private readonly minuteSecondsPipe: MinuteSecondsPipe
+    private readonly minuteSecondsPipe: MinuteSecondsPipe,
+    private readonly http: HttpClient,
   ) {
   }
 
@@ -95,6 +97,7 @@ export class AppComponent implements OnInit {
       this.gameDisplayId = params['gameId'];
       console.log('GameId from params:', this.gameDisplayId);
     });
+    this.fetchVisitorCount();
   }
 
   private getVariables(values: { [key: string]: string }) {
@@ -298,8 +301,8 @@ export class AppComponent implements OnInit {
     }
 
     this.apiService.acceptRuns(runs, this.apiKey)
-    .subscribe(result => this.moderationStatus = 'Successfully accepted runs!',
-      error => this.moderationStatus = `Error - ${error}`);
+      .subscribe(result => this.moderationStatus = 'Successfully accepted runs!',
+        error => this.moderationStatus = `Error - ${error}`);
 
     this.selection.clear();
   }
@@ -314,8 +317,8 @@ export class AppComponent implements OnInit {
 
     this.moderationStatus = 'Loading...';
     this.apiService.rejectRuns(runs, this.message, this.apiKey)
-    .subscribe(result => this.moderationStatus = 'Successfully rejected runs!',
-      error => this.moderationStatus = `Error - ${JSON.stringify(error)}`);
+      .subscribe(result => this.moderationStatus = 'Successfully rejected runs!',
+        error => this.moderationStatus = `Error - ${JSON.stringify(error)}`);
     this.selection.clear();
   }
 
@@ -430,5 +433,10 @@ export class AppComponent implements OnInit {
       obj = obj[nsa.shift()!] || undef;
     }
     return obj;
+  }
+
+  private fetchVisitorCount(): void {
+    this.http.get('https://akleemans.pythonanywhere.com/api/visitors')
+      .subscribe((visitorResponse) => console.log('Visitor count:', visitorResponse));
   }
 }
