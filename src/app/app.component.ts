@@ -436,7 +436,7 @@ export class AppComponent implements OnInit {
   }
 
   private fetchVisitorCount(): void {
-    this.http.get('https://akleemans.pythonanywhere.com/api/visitors')
+    this.http.get('https://akleemans.pythonanywhere.com/api/visitors?project=queueclient')
       .subscribe((visitorResponse) => console.log('Visitor count:', visitorResponse));
   }
 }
