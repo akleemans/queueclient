@@ -72,8 +72,8 @@ export class AppComponent implements OnInit {
   public categoryFilter: string[] = [];
   public videoTypes: string[] = [
     VideoType.YOUTUBE, VideoType.GOOGLE_PHOTOS, VideoType.GOOGLE_DRIVE, VideoType.TIKTOK,
-    VideoType.INSTAGRAM, VideoType.KWAI, VideoType.FACEBOOK, VideoType.TWITCH, VideoType.NO_LINK,
-    VideoType.INVALID_LINK, VideoType.TEMPORARY_LINK, VideoType.OTHER,
+    VideoType.INSTAGRAM, VideoType.KWAI, VideoType.FACEBOOK, VideoType.TWITCH, VideoType.BILIBILI,
+    VideoType.NO_LINK, VideoType.INVALID_LINK, VideoType.TEMPORARY_LINK, VideoType.OTHER,
   ];
   public videoTypeFilter: VideoType[] = [];
 
@@ -288,6 +288,8 @@ export class AppComponent implements OnInit {
       return VideoType.TWITCH;
     } else if (t.indexOf('kwai-video.com') !== -1) {
       return VideoType.KWAI;
+    } else if (t.indexOf('bilibili.com') !== -1 || t.indexOf('b23.tv') !== -1) {
+      return VideoType.BILIBILI;
     }
     return VideoType.OTHER
   }
