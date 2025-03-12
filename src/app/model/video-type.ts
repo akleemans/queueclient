@@ -11,4 +11,5 @@ export enum VideoType {
   FACEBOOK = 'Facebook',
   TWITCH = 'Twitch',
   KWAI = 'Kwai',
+  BILIBILI = 'Bilibili'
 }
